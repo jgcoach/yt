@@ -3,7 +3,7 @@
 
 # In[4]:
 
-
+pip install pytube
 import streamlit as st
 from pytube import YouTube
 from streamlit.widgets.directory_picker import directory_picker
