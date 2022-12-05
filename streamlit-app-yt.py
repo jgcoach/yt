@@ -1,24 +1,26 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[4]:
-
-pip install pytube
 import streamlit as st
+import pandas as pd
 from pytube import YouTube
-from streamlit.widgets.directory_picker import directory_picker
-
-st.title("Descargador de videos de YouTube")
-st.markdown("Ingresa la URL del video que deseas descargar, selecciona la resolución que deseas y elige la ubicación donde lo quieres guardar.")
-
-url = st.text_input("URL del video")
-
-yt = YouTube(url)
-resolutions = yt.streams.filter(progressive=True).order_by("resolution").desc()
-
-selected_resolution = st.selectbox("Selecciona la resolución:", [(f"{r.resolution} ({r.filesize / 1e6:.2f} MB)", r) for r in resolutions])
-download_dir = st.directory_picker("Elige el directorio de descarga:")
-
-if st.button("Descargar"):
-    selected_resolution.download(download_dir)
-
+import base64
+from io import BytesIO
+def main():
+	path = st.text_input('Enter URL of any youtube video')
+	option = st.selectbox(
+     'Select type of download',
+     ('audio', 'highest_resolution', 'lowest_resolution'))
+	
+	matches = ['audio', 'highest_resolution', 'lowest_resolution']
+	if st.button("download"): 
+		video_object =  YouTube(path)
+		st.write("Title of Video: " + str(video_object.title))
+		st.write("Number of Views: " + str(video_object.views))
+		if option=='audio':
+			video_object.streams.get_audio_only().download() 		#base64.b64encode("if file is too large").decode()	
+		elif option=='highest_resolution':
+			video_object.streams.get_highest_resolution().download()
+		elif option=='lowest_resolution':
+			video_object.streams.get_lowest_resolution().download()
+	if st.button("view"): 
+		st.video(path) 
+if __name__ == '__main__':
+	main()
